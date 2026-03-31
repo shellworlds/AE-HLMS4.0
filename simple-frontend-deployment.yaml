@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: simple-frontend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: simple-frontend
+  template:
+    metadata:
+      labels:
+        app: simple-frontend
+    spec:
+      containers:
+      - name: simple-frontend
+        image: simple-frontend:v1
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 80

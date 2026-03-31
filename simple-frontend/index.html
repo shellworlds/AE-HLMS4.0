@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>K8s FullStack Demo</title>
+    <style>
+        body { font-family: Arial; margin: 40px; }
+        form { margin-bottom: 20px; }
+        input { margin-right: 10px; }
+        ul { list-style: none; padding: 0; }
+        li { margin: 10px 0; padding: 10px; background: #f4f4f4; }
+    </style>
+</head>
+<body>
+    <h1>Items List</h1>
+    <form id="itemForm">
+        <input type="text" id="name" placeholder="Name" required>
+        <input type="text" id="description" placeholder="Description" required>
+        <button type="submit">Add Item</button>
+    </form>
+    <ul id="itemList"></ul>
+
+    <script>
+        const apiBase = '/api';
+
+        async function fetchItems() {
+            const response = await fetch(`${apiBase}/items`);
+            const items = await response.json();
+            const list = document.getElementById('itemList');
+            list.innerHTML = '';
+            items.forEach(item => {
+                const li = document.createElement('li');
+                li.innerHTML = `<strong>${item.name}</strong>: ${item.description}`;
+                list.appendChild(li);
+            });
+        }
+
+        document.getElementById('itemForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('name').value;
+            const description = document.getElementById('description').value;
+            const response = await fetch(`${apiBase}/items`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, description })
+            });
+            if (response.ok) {
+                document.getElementById('name').value = '';
+                document.getElementById('description').value = '';
+                fetchItems();
+            } else {
+                alert('Error adding item');
+            }
+        });
+
+        fetchItems();
+    </script>
+</body>
+</html>
